@@ -1,10 +1,17 @@
 import React from "react";
 
-const Content = ({ part, exercises }) => {
+const Content = ({ course }) => {
+  const name = course.name;
+  const parts = course.parts;
+
   return (
-    <p>
-      {part} {exercises}
-    </p>
+    <div>
+      {parts.map(({ name, exercises }, index) => (
+        <p key={index}>
+          {name}: {exercises}
+        </p>
+      ))}
+    </div>
   );
 };
 
