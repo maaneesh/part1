@@ -8,17 +8,10 @@ export const Part = ({ name, exercises }) => {
   );
 };
 
-const Content = ({ course }) => {
-  const [part1, part2, part3] = course.parts;
-  const [exercises1, exercises2, exercises3] = course.exercises;
-
-  return (
-    <div>
-      <Part name={part1} exercises={exercises1} />
-      <Part name={part2} exercises={exercises2} />
-      <Part name={part3} exercises={exercises3} />
-    </div>
-  );
+const Content = ({ parts }) => {
+  return parts.map((part, index) => (
+    <Part name={part.name} exercises={part.exercises} key={index} />
+  ));
 };
 
 export default Content;
