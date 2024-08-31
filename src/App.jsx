@@ -1,40 +1,60 @@
 import { useState } from "react";
 
-const Display = ({ counter }) => {
-  return <div>{counter}</div>;
+const Button = ({ text, handleClick }) => {
+  return <button onClick={handleClick}>{text}</button>;
 };
 
-const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>;
+const Statistics = ({ good, neutral, bad }) => {
+  const feedbackCount = good + bad + neutral;
+  if (feedbackCount > 0) {
+    return (
+      <>
+        <h3>Statistics</h3>
+        <p> Good: {good}</p>
+        <p>Bad: {bad}</p>
+        <p>Neutral: {neutral}</p>
+        <p>All : {feedbackCount}</p>
+        <p>Average:{(good - bad) / feedbackCount}</p>
+        <p>Positive: {(good / feedbackCount) * 100}%</p>
+      </>
+    );
+  }
+  return (
+    <>
+      <h3>Statistics</h3>
+      <p>No feedback given</p>
+    </>
+  );
+};
 
 const App = () => {
-  const [counter, setCounter] = useState(0);
-  console.log("rendering with counter value", counter);
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  const increaseByOne = () => {
-    console.log("increasing, value before", counter);
-
-    setCounter(counter + 1);
+  const handleGood = () => {
+    const newCount = good + 1;
+    setGood(newCount);
   };
-
-  const decreaseByOne = () => {
-    console.log("decreasing, value before", counter);
-
-    setCounter(counter - 1);
+  const handleBad = () => {
+    const newCount = bad + 1;
+    setBad(newCount);
   };
-
-  const setToZero = () => {
-    console.log("resetting to zero, value before", counter);
-
-    setCounter(0);
+  const handleNeutral = () => {
+    const newCount = neutral + 1;
+    setNeutral(newCount);
   };
 
   return (
-    <>
-      <Display counter={counter} />
-      <Button onClick={increaseByOne} text={"Plus"} />
-      <Button onClick={setToZero} text={"Zero"} />
-      <Button onClick={decreaseByOne} text={"Minus"} />
-    </>
+    <div>
+      <h1>Give feedback</h1>
+      <Button text="Good" handleClick={handleGood} />
+      <Button text="Bad" handleClick={handleBad} />
+      <Button text="Neutral" handleClick={handleNeutral} />
+
+      <Statistics good={good} bad={bad} neutral={neutral} />
+    </div>
   );
 };
 
