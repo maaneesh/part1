@@ -4,81 +4,61 @@ const Button = ({ text, handleClick }) => {
   return <button onClick={handleClick}>{text}</button>;
 };
 
-const Statistics = ({ good, neutral, bad }) => {
-  const feedbackCount = good + bad + neutral;
-  const positive = (good / feedbackCount) * 100;
-  const average = good - bad / feedbackCount;
-  if (feedbackCount > 0) {
-    return (
-      <>
-        <h3>Statistics</h3>
-        <StatisticLine text="good" value={good} />
-        <StatisticLine text="bad" value={bad} />
-
-        <StatisticLine text="neutral" value={neutral} />
-
-        <StatisticLine text="All" value={feedbackCount} />
-
-        <StatisticLine text="Average: " value={average} />
-
-        <StatisticLine text="Positive" value={positive} />
-      </>
-    );
-  }
+const AnecdoteDisplay = ({ title, text, votes }) => {
   return (
     <>
-      <h3>Statistics</h3>
-      <p>No feedback given</p>
+      <h2>{title}</h2>
+      <p>{text}</p>
+      <p>{`has ${votes} votes`}</p>
     </>
   );
 };
-
-const StatisticLine = ({ text, value }) => {
-  if (text === "Positive") {
-    return (
-      <>
-        <p>
-          {text} {value} %
-        </p>
-      </>
-    );
-  }
-  return (
-    <>
-      <p>
-        {text} {value}
-      </p>
-    </>
-  );
-};
-
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const anecdotes = [
+    "If it hurts, do it more often.",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+    "The only way to go fast, is to go well.",
+  ];
 
-  const handleGood = () => {
-    const newCount = good + 1;
-    setGood(newCount);
+  const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
+  const [max, setMax] = useState(0);
+
+  const handleNextRequest = () => {
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+    const randNum = getRandomInt(anecdotes.length);
+    setSelected(randNum);
   };
-  const handleBad = () => {
-    const newCount = bad + 1;
-    setBad(newCount);
-  };
-  const handleNeutral = () => {
-    const newCount = neutral + 1;
-    setNeutral(newCount);
+
+  const handleVote = () => {
+    const newPoints = [...points];
+    newPoints[selected] += 1;
+    setPoints(newPoints);
+    setMax(newPoints.indexOf(Math.max(...newPoints)));
+    console.log(newPoints);
   };
 
   return (
     <div>
-      <h1>Give feedback</h1>
-      <Button text="Good" handleClick={handleGood} />
-      <Button text="Bad" handleClick={handleBad} />
-      <Button text="Neutral" handleClick={handleNeutral} />
-
-      <Statistics good={good} bad={bad} neutral={neutral} />
+      <AnecdoteDisplay
+        title="Anecdote of the day"
+        text={anecdotes[selected]}
+        votes={points[selected]}
+      />
+      <Button text="Next anecdote" handleClick={handleNextRequest} />
+      <Button text="Vote" handleClick={handleVote} />
+      <AnecdoteDisplay
+        title="Anecdote with most votes"
+        text={anecdotes[max]}
+        votes={points[max]}
+      />
     </div>
   );
 };
